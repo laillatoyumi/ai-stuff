@@ -1,0 +1,503 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>TM Recipes</title>
+<meta name="theme-color" content="#1F4D3A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="TM Recipes">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-192.png">
+<link rel="manifest" href="manifest.json">
+<style>
+:root{
+  --bg:#F6EFE3; --card:#FFFBF4; --ink:#1E2420; --muted:#6B6A62; --line:#E4DACA;
+  --green:#1F4D3A; --green-soft:#DCE8DF; --amber:#E8A33D; --amber-soft:#FBE9CC; --red:#B4412F;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --bg:#141816; --card:#1D2320; --ink:#EDE9E0; --muted:#A3A196; --line:#2E3631;
+    --green:#7FC3A1; --green-soft:#23372D; --amber:#F0B65A; --amber-soft:#3A2E1A; --red:#E07A66; }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;-webkit-text-size-adjust:100%}
+body{padding:env(safe-area-inset-top) 0 calc(env(safe-area-inset-bottom) + 24px)}
+.wrap{max-width:640px;margin:0 auto;padding:0 16px}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 0 8px}
+header h1{font-size:20px;margin:0;letter-spacing:-.01em}
+header h1 span{color:var(--amber)}
+.iconbtn{background:none;border:0;color:var(--ink);font-size:15px;padding:8px;border-radius:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+label{display:block;font-weight:600;font-size:14px;margin:0 0 6px}
+textarea,input[type=text],input[type=password],select{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:12px}
+textarea{min-height:110px;resize:vertical}
+.row{display:flex;gap:10px;align-items:center}
+.row > *{flex:1}
+.btn{display:block;width:100%;font:inherit;font-weight:700;border:0;border-radius:14px;padding:14px;background:var(--green);color:var(--card)}
+.btn.ghost{background:var(--green-soft);color:var(--green)}
+.btn.small{display:inline-block;width:auto;padding:9px 14px;font-size:14px}
+.btn:disabled{opacity:.5}
+.photo{display:flex;gap:10px;align-items:center;margin-top:10px}
+.photo img{width:64px;height:64px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.filebtn{display:inline-block;background:var(--amber-soft);color:var(--ink);border-radius:12px;padding:10px 14px;font-weight:600;font-size:14px}
+.hint{color:var(--muted);font-size:13px;margin:6px 0 0}
+.list a{display:block;color:inherit;text-decoration:none;padding:12px 0;border-top:1px solid var(--line)}
+.list a:first-child{border-top:0}
+.list small{color:var(--muted)}
+.tabs{display:flex;background:var(--green-soft);border-radius:14px;padding:4px;margin:12px 0}
+.tabs button{flex:1;border:0;background:none;font:inherit;font-weight:600;color:var(--green);padding:10px;border-radius:10px}
+.tabs button.on{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+h2{font-size:22px;margin:4px 0 4px;line-height:1.2}
+h3{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:18px 0 8px}
+.meta{color:var(--muted);font-size:14px}
+ul.ing{list-style:none;padding:0;margin:0}
+ul.ing li{padding:8px 0;border-top:1px solid var(--line);display:flex;gap:10px}
+ul.ing li:first-child{border-top:0}
+ul.ing b{min-width:72px;white-space:nowrap}
+ul.ing em{color:var(--muted);font-style:normal;font-size:14px;display:block}
+ol.steps{list-style:none;padding:0;margin:0;counter-reset:s}
+ol.steps li{counter-increment:s;position:relative;padding:10px 0 10px 40px;border-top:1px solid var(--line)}
+ol.steps li:first-child{border-top:0}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:10px;width:28px;height:28px;border-radius:50%;background:var(--green);color:var(--card);font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+ol.steps li.off::before{background:var(--amber);color:#1E2420}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:var(--green-soft);color:var(--green);font-weight:700;font-size:13px;padding:5px 10px;border-radius:999px}
+.chip.acc{background:var(--amber-soft);color:var(--ink);font-weight:600}
+.chip.off{background:var(--amber-soft);color:var(--ink)}
+.note{background:var(--amber-soft);border-radius:12px;padding:10px 12px;margin:6px 0;font-size:14px}
+.note.warn{border-left:4px solid var(--red)}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.err{color:var(--red);font-size:14px;margin-top:10px;white-space:pre-wrap}
+.loading{text-align:center;padding:40px 0;color:var(--muted)}
+.spinner{width:36px;height:36px;border:4px solid var(--green-soft);border-top-color:var(--green);border-radius:50%;margin:0 auto 12px;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 20px);transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.show{opacity:1}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ---------- storage (on this phone only) ----------
+const LS = {
+  get(k, d){ try{ const v = localStorage.getItem(k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+let settings = LS.get('tm_settings', { apiKey:'', model:'claude-sonnet-5-5', tm:'TM6' });
+let recipes = LS.get('tm_recipes', []);
+let state = { view:'home', id:null, tab:'tm', busy:'', error:'', photo:null };
+
+// ---------- AI prompts ----------
+const RECIPE_SYSTEM = `You write home recipes for a cook in the UK. Read every rule before you start.
+
+What you may receive:
+- A dish idea in words, a pasted recipe, a photo or screenshot of food, or a mix of these.
+- Sometimes an existing recipe plus a change request. Then change only what was asked and keep everything else the same.
+
+If you get a photo:
+- Look closely and work out what the dish is and what is in it, layer by layer, from what you can actually see (colours, textures, shapes, toppings, how it is served).
+- Write a recipe that recreates what is in the photo, not a different, more common version of the dish.
+- Put every guess you made into "assumptions", in plain words, so the cook can correct you.
+
+Ingredients:
+- Use ingredients a UK cook can buy in a normal big supermarket. Use UK names.
+- Some products have the same name in the UK but behave differently (thinner, sweeter, saltier, different fat level), or are not sold in the UK. When the dish depends on how a product behaves, give the UK way to get the same result and explain it in that ingredient's "note".
+- Use metric: g and ml. Small amounts of spices, salt and similar can use tsp, tbsp or pinch. Countable items (eggs, potatoes, onions) can be a number with size, for example "2 large".
+- Amounts must match the number of servings asked for.
+
+Method:
+- Each step is one or two short, plain sentences. Start with a verb.
+- Give the time, the heat (oven in °C with the fan temperature, or hob low/medium/high) and how to tell it is done.
+- Keep the steps in the order a real cook would do them, doing things in parallel where it saves time.
+
+Writing style: plain, simple English that a non-native speaker understands. UK spelling. No fancy food-writing words. No em dashes.
+
+Always answer by calling the save_recipe tool.`;
+
+const RECIPE_TOOL = {
+  name:'save_recipe',
+  description:'Save the finished home recipe.',
+  input_schema:{ type:'object', required:['title','servings','ingredients','steps'], properties:{
+    title:{type:'string'},
+    description:{type:'string', description:'One short plain sentence about the dish.'},
+    servings:{type:'integer'},
+    total_minutes:{type:'integer'},
+    assumptions:{type:'array', items:{type:'string'}, description:'Guesses you made, especially from a photo.'},
+    ingredients:{type:'array', items:{type:'object', required:['amount','name'], properties:{
+      amount:{type:'string', description:'Number and unit, for example "200 g", "1 tbsp", "2 large".'},
+      name:{type:'string'},
+      note:{type:'string', description:'Prep or UK swap advice. Empty if none.'}
+    }}},
+    steps:{type:'array', items:{type:'string'}},
+    tips:{type:'array', items:{type:'string'}}
+  }}
+};
+
+function convertSystem(tm){
+  const hot = tm === 'TM5'
+    ? '- This is a TM5. It has NO browning or high-temperature mode. It cannot brown or sear anything. Where the original browns food, either do that step in a pan (off-machine) or cook it in the bowl without browning and add a warning that the taste and look will be softer.'
+    : '- This is a ' + tm + '. It has a high-temperature mode (up to 160°C) that can lightly brown small amounts of food, a few hundred grams at a time, in a thin layer. Use it only where browning really matters to the dish. It still cannot make things crispy.';
+  return `You turn a normal home recipe into a Thermomix recipe for a ${tm} owner in the UK. Read every rule before you start.
+
+WHAT THE MACHINE IS
+- One mixing bowl with blades at the bottom. The bowl can heat and it weighs what you put in, so every ingredient that goes into the bowl is given in g or ml. Only tiny amounts (spices, salt, a pinch) can stay as tsp, tbsp or pinch.
+- The bowl holds at most 2.2 litres in total. If a step would go over that, split it into batches and say so in the step and in "warnings".
+- Every machine step has settings: time, temperature and speed.
+  - time: like "30 sec" or "8 min".
+  - temp: a number in °C between 37 and 120, or "Varoma" (full steam heat), or empty for no heat.
+  - speed: "spoon" (very slow stir), a number from 1 to 10, or "turbo" (short strong bursts).
+  - reverse: true or false.
+- Reverse makes the blades turn the blunt way, so they stir without cutting. Use reverse whenever food must stay in pieces (chunks of meat or veg, beans, grains, pasta, anything that would turn to mush). Without reverse, anything run above spoon speed gets cut.
+- What speeds do: spoon to 2 stir gently. 3 to 5 chop roughly or mix. 6 to 10 blend smooth, grate hard food or mill. Higher speed and longer time both make it finer. Fast speeds on hot food splash, so keep hot food at 6 or lower unless the step is blending a soup or sauce smooth.
+${hot}
+- The machine can boil, simmer, steam, stir, chop, grate, blend, whip, knead and emulsify. It CANNOT deep-fry, roast, bake, grill, toast or make anything crispy or golden. Never pretend it can.
+
+ACCESSORIES (name the one you use in "accessory")
+- Butterfly whisk: clips onto the blades for whipping and making things airy. Never above speed 4. Never use the spatula while it is in.
+- Simmering basket: sits inside the bowl. Use it to cook pieces (like grains or veg chunks) separately from what is in the bowl, to drain liquid, or placed on the lid instead of the measuring cup to stop splashes while letting steam out.
+- Varoma: a steaming tray that sits on top of the lid. Food in it steams while something cooks in the bowl below. The bowl must hold enough liquid to last the whole steaming time: at least 500 g water for up to 30 minutes, and about 250 g more for every extra 15 minutes. Use temp "Varoma".
+- Measuring cup: plugs the hole in the lid. Take it out (or swap it for the simmering basket) when you need liquid to reduce.
+- Spatula: to scrape down the sides between steps. Tell the cook when to scrape down.
+
+HOW TO CONVERT, IN THIS ORDER
+1. Read the original method and list every job in it (for example: chop, cook, mix, bake, assemble).
+2. For each job decide: can the bowl do this job as well as the original? If yes, make it a machine step. If no (oven, grill, air fryer, frying until crisp, toasting, plating), keep it as an off-machine step with "off_machine": true and no settings.
+3. Use the machine where it saves effort, even if the original did it by hand (chopping, grating, whisking a sauce, kneading).
+4. Order the machine steps so the cook washes the bowl as little as possible: dry chopping and grating first, set aside, then cooking, then anything that needs a clean, cold, dry bowl (like whipping) last. If a step needs a clean bowl, the step text must say "Rinse and dry the bowl".
+5. If the original cooks two things at once, use the Varoma or the simmering basket to do them together when they fit.
+6. Off-machine steps that can happen while the machine runs should say so, so the cook does them at the same time.
+7. Keep the same servings and the same amounts as the original. Convert units into g or ml for anything that goes into the bowl.
+8. Check every machine step before you finish:
+   - Is the bowl under 2.2 litres?
+   - Do pieces need to stay whole? Then reverse must be true.
+   - Is there enough liquid in the bowl for the Varoma time?
+   - Is raw meat, fish or egg cooked through in the time given? If you are not sure, the step says how to check and to add more time if needed.
+   - Is the speed safe for hot food?
+9. Each step "text" says, in plain short sentences: what goes into the bowl (with amounts), what the machine does, and what it should look like at the end. Do not repeat the settings inside the text, they go in "settings".
+10. "warnings" lists anything the cook must know before starting: batches, things that will turn out softer or different from the original, extra kit needed.
+
+Writing style: plain, simple English that a non-native speaker understands. UK spelling. No em dashes.
+
+Always answer by calling the save_thermomix tool.`;
+}
+
+const TM_TOOL = {
+  name:'save_thermomix',
+  description:'Save the finished Thermomix recipe.',
+  input_schema:{ type:'object', required:['title','servings','ingredients','steps'], properties:{
+    title:{type:'string'},
+    servings:{type:'integer'},
+    total_minutes:{type:'integer'},
+    warnings:{type:'array', items:{type:'string'}},
+    equipment:{type:'array', items:{type:'string'}, description:'Extra kit needed besides the Thermomix, like an oven or baking tray.'},
+    ingredients:{type:'array', items:{type:'object', required:['amount','name'], properties:{
+      amount:{type:'string'}, name:{type:'string'}, note:{type:'string'}
+    }}},
+    steps:{type:'array', items:{type:'object', required:['text','off_machine'], properties:{
+      text:{type:'string'},
+      off_machine:{type:'boolean'},
+      accessory:{type:'string', description:'Accessory used in this step, or empty.'},
+      settings:{type:'object', properties:{
+        time:{type:'string'}, temp:{type:'string'}, speed:{type:'string'}, reverse:{type:'boolean'}, mode:{type:'string', description:'Special mode if any, like Kneading or High temperature. Empty if none.'}
+      }}
+    }}},
+    tips:{type:'array', items:{type:'string'}}
+  }}
+};
+
+// ---------- AI call ----------
+async function askClaude(system, content, tool){
+  if(!settings.apiKey) throw new Error('Add your Anthropic API key in Settings first.');
+  const res = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{
+      'content-type':'application/json',
+      'x-api-key': settings.apiKey,
+      'anthropic-version':'2023-06-01',
+      'anthropic-dangerous-direct-browser-access':'true'
+    },
+    body: JSON.stringify({
+      model: settings.model || 'claude-sonnet-5-5',
+      max_tokens: 8000,
+      system,
+      tools:[tool],
+      tool_choice:{ type:'tool', name: tool.name },
+      messages:[{ role:'user', content }]
+    })
+  });
+  const data = await res.json().catch(()=>({}));
+  if(!res.ok){
+    const msg = (data.error && data.error.message) || ('Error ' + res.status);
+    throw new Error(msg);
+  }
+  const block = (data.content || []).find(b => b.type === 'tool_use');
+  if(!block) throw new Error('The AI did not return a recipe. Try again.');
+  return block.input;
+}
+
+async function makeRecipe({ text, photo, servings, base }){
+  const content = [];
+  if(photo) content.push({ type:'image', source:{ type:'base64', media_type:'image/jpeg', data: photo } });
+  let msg = '';
+  if(base){
+    msg += 'Here is the current recipe as JSON:\n' + JSON.stringify(base) + '\n\nChange request: ' + text;
+  } else {
+    msg += (text ? 'Request: ' + text : 'Make a recipe for the dish in the photo.') + '\nServings: ' + servings;
+  }
+  content.push({ type:'text', text: msg });
+  return askClaude(RECIPE_SYSTEM, content, RECIPE_TOOL);
+}
+
+async function convertToTM(recipe){
+  const content = [{ type:'text', text:'Convert this recipe for my ' + settings.tm + ':\n' + JSON.stringify(recipe) }];
+  return askClaude(convertSystem(settings.tm), content, TM_TOOL);
+}
+
+// ---------- helpers ----------
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function toast(t){ const el = document.getElementById('toast'); el.textContent = t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'), 1600); }
+function save(){ LS.set('tm_recipes', recipes); }
+function current(){ return recipes.find(r => r.id === state.id); }
+function go(view, extra){ Object.assign(state, { view, error:'' }, extra || {}); render(); window.scrollTo(0,0); }
+
+function settingsLine(s){
+  if(!s) return '';
+  const parts = [];
+  if(s.time) parts.push(s.time);
+  if(s.temp) parts.push(/varoma/i.test(s.temp) ? 'Varoma' : (/\d/.test(s.temp) && !/°/.test(s.temp) ? s.temp + '°C' : s.temp));
+  if(s.speed) parts.push(/^\d+(\.\d+)?$/.test(s.speed) ? 'speed ' + s.speed : s.speed);
+  if(s.reverse) parts.push('reverse');
+  if(s.mode) parts.push(s.mode);
+  return parts.join(' / ');
+}
+
+function resizeImage(file){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      const max = 1400;
+      let { width:w, height:h } = img;
+      const k = Math.min(1, max / Math.max(w, h));
+      w = Math.round(w * k); h = Math.round(h * k);
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', 0.85).split(',')[1]);
+    };
+    img.onerror = () => reject(new Error('Could not read that image.'));
+    img.src = url;
+  });
+}
+
+function copy(text){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(()=>toast('Copied'), ()=>fallbackCopy(text));
+  } else fallbackCopy(text);
+}
+function fallbackCopy(text){
+  const t = document.createElement('textarea'); t.value = text; document.body.appendChild(t); t.select();
+  try{ document.execCommand('copy'); toast('Copied'); }catch(e){ toast('Copy failed'); }
+  t.remove();
+}
+
+function ingredientsText(list){ return (list || []).map(i => (i.amount ? i.amount + ' ' : '') + i.name + (i.note ? ', ' + i.note : '')).join('\n'); }
+function tmStepsText(tm){
+  return (tm.steps || []).map((s, i) => {
+    const line = s.off_machine ? '' : settingsLine(s.settings);
+    return (i + 1) + '. ' + s.text + (line ? ' (' + line + ')' : '') + (s.accessory ? ' [' + s.accessory + ']' : '');
+  }).join('\n');
+}
+
+// ---------- views ----------
+function viewHome(){
+  const noKey = !settings.apiKey;
+  return `
+  <header><h1>TM <span>Recipes</span></h1><button class="iconbtn" onclick="go('settings')">Settings</button></header>
+  ${noKey ? `<div class="card note warn">Add your Anthropic API key in <a href="#" onclick="go('settings');return false">Settings</a> to start.</div>` : ''}
+  <div class="card">
+    <label for="req">What do you want to make?</label>
+    <textarea id="req" placeholder="A dish idea, a pasted recipe, or add a screenshot of a food video"></textarea>
+    <div class="photo">
+      <label class="filebtn" style="margin:0">Add photo<input id="file" type="file" accept="image/*" class="hidden" onchange="pickPhoto(this)"></label>
+      ${state.photo ? `<img src="data:image/jpeg;base64,${state.photo}" alt="Chosen photo"><button class="iconbtn" onclick="state.photo=null;render()">Remove</button>` : ''}
+    </div>
+    <div class="row" style="margin-top:12px">
+      <div><label for="serv">Servings</label><input id="serv" type="text" inputmode="numeric" value="${esc(settings.servings || 2)}"></div>
+      <div><label>Machine</label><div class="meta" style="padding:12px 0">${esc(settings.tm)}</div></div>
+    </div>
+    <button class="btn" style="margin-top:14px" onclick="create()">Make Thermomix recipe</button>
+    ${state.error ? `<div class="err">${esc(state.error)}</div>` : ''}
+  </div>
+  ${recipes.length ? `<div class="card list"><h3 style="margin-top:0">My recipes</h3>${recipes.map(r => `
+    <a href="#" onclick="go('recipe',{id:'${r.id}',tab:'tm'});return false"><b>${esc(r.tm ? r.tm.title : r.recipe.title)}</b><br><small>${esc(r.tmModel || '')} · ${new Date(r.created).toLocaleDateString('en-GB')}</small></a>`).join('')}</div>` : ''}
+  `;
+}
+
+function viewBusy(){
+  return `<header><h1>TM <span>Recipes</span></h1></header><div class="loading"><div class="spinner"></div>${esc(state.busy)}</div>`;
+}
+
+function viewRecipe(){
+  const r = current();
+  if(!r) return viewHome();
+  const tab = state.tab;
+  const tm = r.tm, rc = r.recipe;
+  let body = '';
+  if(tab === 'tm'){
+    body = `
+      <h2>${esc(tm.title)}</h2>
+      <div class="meta">${esc(r.tmModel)} · Serves ${esc(tm.servings)}${tm.total_minutes ? ' · about ' + esc(tm.total_minutes) + ' min' : ''}</div>
+      ${(tm.warnings || []).map(w => `<div class="note warn">${esc(w)}</div>`).join('')}
+      ${(tm.equipment || []).length ? `<div class="chips" style="margin-top:10px">${tm.equipment.map(e => `<span class="chip acc">${esc(e)}</span>`).join('')}</div>` : ''}
+      <h3>Ingredients</h3>
+      <ul class="ing">${(tm.ingredients || []).map(i => `<li><b>${esc(i.amount)}</b><span>${esc(i.name)}${i.note ? `<em>${esc(i.note)}</em>` : ''}</span></li>`).join('')}</ul>
+      <h3>Method</h3>
+      <ol class="steps">${(tm.steps || []).map(s => `<li class="${s.off_machine ? 'off' : ''}">${esc(s.text)}
+        <div class="chips">${s.off_machine ? '<span class="chip off">Off the machine</span>' : (settingsLine(s.settings) ? `<span class="chip">${esc(settingsLine(s.settings))}</span>` : '')}${s.accessory ? `<span class="chip acc">${esc(s.accessory)}</span>` : ''}</div></li>`).join('')}</ol>
+      ${(tm.tips || []).length ? `<h3>Tips</h3>${tm.tips.map(t => `<div class="note">${esc(t)}</div>`).join('')}` : ''}
+      <h3>Copy into Cookidoo</h3>
+      <div class="actions">
+        <button class="btn ghost small" onclick="copyPart('title')">Title</button>
+        <button class="btn ghost small" onclick="copyPart('ing')">Ingredients</button>
+        <button class="btn ghost small" onclick="copyPart('steps')">Steps</button>
+        <button class="btn ghost small" onclick="copyPart('all')">Everything</button>
+      </div>`;
+  } else {
+    body = `
+      <h2>${esc(rc.title)}</h2>
+      <div class="meta">Serves ${esc(rc.servings)}${rc.total_minutes ? ' · about ' + esc(rc.total_minutes) + ' min' : ''}</div>
+      ${rc.description ? `<p>${esc(rc.description)}</p>` : ''}
+      ${(rc.assumptions || []).length ? `<h3>Guesses I made</h3>${rc.assumptions.map(a => `<div class="note">${esc(a)}</div>`).join('')}` : ''}
+      <h3>Ingredients</h3>
+      <ul class="ing">${(rc.ingredients || []).map(i => `<li><b>${esc(i.amount)}</b><span>${esc(i.name)}${i.note ? `<em>${esc(i.note)}</em>` : ''}</span></li>`).join('')}</ul>
+      <h3>Method</h3>
+      <ol class="steps">${(rc.steps || []).map(s => `<li>${esc(s)}</li>`).join('')}</ol>
+      ${(rc.tips || []).length ? `<h3>Tips</h3>${rc.tips.map(t => `<div class="note">${esc(t)}</div>`).join('')}` : ''}`;
+  }
+  return `
+  <header><button class="iconbtn" onclick="go('home')">← Back</button><button class="iconbtn" style="color:var(--red)" onclick="del()">Delete</button></header>
+  <div class="tabs"><button class="${tab==='tm'?'on':''}" onclick="state.tab='tm';render()">Thermomix</button><button class="${tab==='orig'?'on':''}" onclick="state.tab='orig';render()">Normal</button></div>
+  <div class="card">${body}</div>
+  <div class="card">
+    <label for="tweak">Change something</label>
+    <textarea id="tweak" style="min-height:70px" placeholder="For example: make it for 4, no chicken, less spicy"></textarea>
+    <button class="btn" style="margin-top:10px" onclick="tweak()">Update recipe</button>
+    ${(r.tmModel !== settings.tm) ? `<button class="btn ghost" style="margin-top:8px" onclick="reconvert()">Convert again for ${esc(settings.tm)}</button>` : ''}
+    ${state.error ? `<div class="err">${esc(state.error)}</div>` : ''}
+  </div>`;
+}
+
+function viewSettings(){
+  return `
+  <header><button class="iconbtn" onclick="go('home')">← Back</button><h1>Settings</h1><span></span></header>
+  <div class="card">
+    <label for="key">Anthropic API key</label>
+    <input id="key" type="password" autocomplete="off" value="${esc(settings.apiKey)}" placeholder="sk-ant-...">
+    <p class="hint">Saved on this phone only. It never goes into the code or the GitHub repo. Set a monthly spend limit on the key in the Anthropic Console.</p>
+    <label for="tm" style="margin-top:14px">Your Thermomix</label>
+    <select id="tm">${['TM7','TM6','TM5'].map(m => `<option ${settings.tm===m?'selected':''}>${m}</option>`).join('')}</select>
+    <label for="servDef" style="margin-top:14px">Default servings</label>
+    <input id="servDef" type="text" inputmode="numeric" value="${esc(settings.servings || 2)}">
+    <label for="model" style="margin-top:14px">AI model</label>
+    <input id="model" type="text" value="${esc(settings.model)}">
+    <p class="hint">Leave this as it is unless a newer model comes out.</p>
+    <button class="btn" style="margin-top:14px" onclick="saveSettings()">Save</button>
+  </div>`;
+}
+
+function render(){
+  const app = document.getElementById('app');
+  if(state.busy) app.innerHTML = viewBusy();
+  else if(state.view === 'recipe') app.innerHTML = viewRecipe();
+  else if(state.view === 'settings') app.innerHTML = viewSettings();
+  else app.innerHTML = viewHome();
+}
+
+// ---------- actions ----------
+async function pickPhoto(input){
+  const f = input.files && input.files[0];
+  if(!f) return;
+  const draft = (document.getElementById('req') || {}).value || '';
+  try{ state.photo = await resizeImage(f); state.error=''; }catch(e){ state.error = e.message; }
+  render();
+  document.getElementById('req').value = draft;
+}
+
+async function create(){
+  const text = document.getElementById('req').value.trim();
+  const servings = parseInt(document.getElementById('serv').value, 10) || 2;
+  if(!text && !state.photo){ state.error = 'Type something or add a photo first.'; render(); return; }
+  const photo = state.photo;
+  try{
+    state.busy = 'Writing the recipe...'; render();
+    const recipe = await makeRecipe({ text, photo, servings });
+    state.busy = 'Converting for your ' + settings.tm + '...'; render();
+    const tm = await convertToTM(recipe);
+    const r = { id: String(Date.now()), created: Date.now(), request: text, recipe, tm, tmModel: settings.tm };
+    recipes.unshift(r); save();
+    state.busy = ''; state.photo = null;
+    go('recipe', { id: r.id, tab:'tm' });
+  }catch(e){
+    state.busy = ''; state.error = e.message; render();
+    document.getElementById('req').value = text;
+  }
+}
+
+async function tweak(){
+  const r = current();
+  const text = document.getElementById('tweak').value.trim();
+  if(!text){ state.error = 'Say what to change first.'; render(); return; }
+  try{
+    state.busy = 'Updating the recipe...'; render();
+    const recipe = await makeRecipe({ text, base: r.recipe });
+    state.busy = 'Converting for your ' + settings.tm + '...'; render();
+    const tm = await convertToTM(recipe);
+    Object.assign(r, { recipe, tm, tmModel: settings.tm }); save();
+    state.busy = ''; go('recipe', { id: r.id, tab:'tm' });
+  }catch(e){
+    state.busy = ''; state.error = e.message; render();
+    document.getElementById('tweak').value = text;
+  }
+}
+
+async function reconvert(){
+  const r = current();
+  try{
+    state.busy = 'Converting for your ' + settings.tm + '...'; render();
+    r.tm = await convertToTM(r.recipe); r.tmModel = settings.tm; save();
+    state.busy = ''; go('recipe', { id: r.id, tab:'tm' });
+  }catch(e){ state.busy = ''; state.error = e.message; render(); }
+}
+
+function copyPart(which){
+  const r = current(); const tm = r.tm;
+  if(which === 'title') copy(tm.title);
+  if(which === 'ing') copy(ingredientsText(tm.ingredients));
+  if(which === 'steps') copy(tmStepsText(tm));
+  if(which === 'all') copy(tm.title + '\nServes ' + tm.servings + '\n\nIngredients\n' + ingredientsText(tm.ingredients) + '\n\nMethod\n' + tmStepsText(tm));
+}
+
+function del(){
+  if(!confirm('Delete this recipe?')) return;
+  recipes = recipes.filter(r => r.id !== state.id); save(); go('home');
+}
+
+function saveSettings(){
+  settings = {
+    apiKey: document.getElementById('key').value.trim(),
+    tm: document.getElementById('tm').value,
+    servings: parseInt(document.getElementById('servDef').value, 10) || 2,
+    model: document.getElementById('model').value.trim() || 'claude-sonnet-5-5'
+  };
+  LS.set('tm_settings', settings); toast('Saved'); go('home');
+}
+
+render();
+</script>
+</body>
+</html>
